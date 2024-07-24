@@ -1,0 +1,38 @@
+CREATE USER 's'@'localhost' IDENTIFIED BY 'password';
+
+GRANT ALL PRIVILEGES ON *.* TO 's'@'localhost' WITH GRANT OPTION;
+
+CREATE TABLE Employee (
+EMPNO INT,
+ENAME VARCHAR(100),
+JOB VARCHAR(100),
+MANAGER_NO INT,
+SAL DECIMAL(10, 2),
+COMMISSION DECIMAL(10, 2)
+);
+
+insert into employee values (1, 'anil', 'trainee', NULL, 50000, '1000');
+commit;
+select * from employee;
+
+insert into employee values (2, 'likhitha', 'trainee', NULL, 50000, '5000');
+insert into employee values (3, 'manas', 'trainee', NULL, 50000, '4000');
+insert into employee values (4, 'amogh', 'trainee', NULL, 50000, '5000');
+select * from employee;
+
+ROLLBACK;
+select* from employee;
+
+ALTER TABLE Employee
+ADD PRIMARY KEY (EMPNO);
+
+ALTER TABLE Employee
+MODIFY EMPNO INT NOT NULL,
+MODIFY ENAME VARCHAR(100) NOT NULL,
+MODIFY JOB VARCHAR(100) NOT NULL,
+MODIFY MANAGER_NO INT NOT NULL,
+MODIFY SAL DECIMAL(10, 2) NOT NULL,
+MODIFY COMMISSION DECIMAL(10, 2) NOT NULL;
+
+INSERT INTO Employee (EMPNO, ENAME, JOB, MANAGER_NO, SAL, COMMISSION) VALUES 
+(NULL, 'anup', 'analyst', NULL, NULL, NULL);
