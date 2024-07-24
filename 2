@@ -1,0 +1,25 @@
+CREATE TABLE Employee (
+EMPNO INT PRIMARY KEY,
+ENAME VARCHAR(50),
+JOB VARCHAR(50),
+MGR INT,
+SAL DECIMAL(10, 2)
+);
+ALTER TABLE EMPLOYEE
+ADD COLUMN COMM DECIMAL(10,2)
+
+INSERT INTO Employee (EMPNO, ENAME, JOB, MGR, SAL, COMM)
+VALUES (101, 'anil', 'Manager', 100, 50000, 1000),
+(102, 'akhil', 'Developer', 101, 40000, 500),
+(103, 'varun', 'Analyst', 102, 35000, 200),
+(104, 'ramya', 'Designer', 103, 45000, 800),
+(105, 'amogha', 'Engineer', 101, 42000, 700);
+
+UPDATE Employee
+SET JOB = 'Lead Developer' WHERE ENAME = 'akhil';
+
+ALTER TABLE Employee
+CHANGE COLUMN MGR manager_no INT;
+
+DEELETE FROM EMPLOYEE
+WHERE EMPNO=105;
