@@ -1,0 +1,56 @@
+create database rollcall;
+
+use rollcall;
+
+create table employee(
+E_id int primary key,
+E_name varchar(25),
+Age int,
+Salary int
+);
+
+insert into employee(E_id,E_name,Age,Salary)
+values
+(1, 'Samarth', 30, 50000),
+(2, 'Ramesh Kumar', 25, 45000),
+(3, 'Seema Banu', 35, 62000),
+(4, 'Dennis Anil', 28, 52000),
+(5, 'Rehman Khan', 32, 58000);
+
+delimiter //
+create procedure fetch_employee_data()
+begin
+declare emp_id int;
+declare emp_name varchar(25);
+declare emp_Age int;
+declare emp_Salary int;
+
+declare emp_cursor cursor for
+select E_id,E_name,Age,Salary
+from employee;
+
+declare continue handler for not found
+set @finished=1;
+
+open emp_cursor;
+
+set @finished=0;
+
+cursor_loop:loop
+
+fetch emp_cursor into emp_id, emp_name, emp_age, emp_salary;
+
+if @finished=1 then
+leave cursor_loop;
+end if;
+
+select concat('Employee ID: ', emp_id,', Name:', emp_name,',Age:',emp_age,',Salary:',emp_salary) as employee_info;
+end loop;
+
+close emp_cursor;
+end//
+delimiter;
+ 
+
+call fetch_employee_data();
+
