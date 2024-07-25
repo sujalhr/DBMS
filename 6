@@ -1,51 +1,76 @@
-CREATE TABLE Employee (
-E_id INT,
-E_name VARCHAR(255),
-Age INT,
-Salary DECIMAL(10, 2)
+CREATE DATABASE ROLLCALL;
+USE ROLLCALL;
+-- Create N_RollCall table
+CREATE TABLE N_RollCall (
+student_id INT PRIMARY KEY,
+student_name VARCHAR(255),
+birth_date DATE
 );
-INSERT INTO Employee (E_id, E_name, Age, Salary)
+-- Create O_RollCall table with common data
+CREATE TABLE O_RollCall (
+student_id INT PRIMARY KEY,
+student_name VARCHAR(255),
+birth_date DATE
+);
+************************************************
+-- Insert common data into O_RollCall
+INSERT INTO O_RollCall (student_id, student_name, birth_date)
+VALUES (1, 'Shivanna', '1995-08-15'),
+(3, 'Cheluva', '1990-12-10');
+************************************************
+-- Insert sample records into N_RollCall
+INSERT INTO N_RollCall (student_id, student_name, birth_date)
 VALUES
-(1, 'Samarth', 30, 50000.00),
-(2, 'Ramesh Kumar', 25, 45000.00),
-(3, 'Seema Banu', 35, 62000.00),
-(4, 'Dennis Anil', 28, 52000.00),
-(5, 'Rehman Khan', 32, 58000.00);
-
-DELIMITER $$
-CREATE PROCEDURE fetch_employee_data()
+(1, 'Shivanna', '1995-08-15'), -- Common record with O_RollCall
+(2, 'Bhadramma', '1998-03-22'),
+(3, 'Cheluva', '1990-12-10'), -- Common record with O_RollCall
+(4, 'Devendra', '2000-05-18'),
+(5, 'Eshwar', '1997-09-03');
+**************************************************************
+DELIMITER //
+CREATE PROCEDURE merge_rollcall_data()
 BEGIN
-DECLARE emp_id INT;
-DECLARE emp_name VARCHAR(255);
-DECLARE emp_age INT;
-DECLARE emp_salary DECIMAL(10, 2);
--- Declare a cursor for the Employee table
-DECLARE emp_cursor CURSOR FOR
-SELECT E_id, E_name, Age, Salary
-FROM Employee;
--- Declare a continue handler for the cursor
+DECLARE done INT DEFAULT FALSE;
+DECLARE n_id INT;
+DECLARE n_name VARCHAR(255);
+DECLARE n_birth_date DATE;
+-- Declare cursor for N_RollCall table
+DECLARE n_cursor CURSOR FOR
+SELECT student_id, student_name, birth_date
+FROM N_RollCall;
+-- Declare handler for cursor
 DECLARE CONTINUE HANDLER FOR NOT FOUND
-SET @finished = 1;
+SET done = TRUE;
 -- Open the cursor
-OPEN emp_cursor;
--- Initialize a variable to control cursor loop
-SET @finished = 0;
--- Loop through the cursor results
+OPEN n_cursor;
+-- Start looping through cursor results
 cursor_loop: LOOP
--- Fetch the next row from the cursor into variables
-FETCH emp_cursor INTO emp_id, emp_name, emp_age, emp_salary;
+-- Fetch data from cursor into variables
+FETCH n_cursor INTO n_id, n_name, n_birth_date;
 -- Check if no more rows to fetch
-IF @finished = 1 THEN
+IF done THEN
 LEAVE cursor_loop;
 END IF;
--- Output or process each row (for demonstration, print the values)
-SELECT CONCAT('Employee ID: ', emp_id, ', Name: ', emp_name, ', Age: ', emp_age,
-', Salary: ', emp_salary) AS Employee_Info;
-SELECT emp_id,emp_name,emp_age,emp_salary;
+-- Check if the data already exists in O_RollCall
+IF NOT EXISTS (
+SELECT 1
+FROM O_RollCall
+WHERE student_id = n_id
+) THEN
+-- Insert the record into O_RollCall
+INSERT INTO O_RollCall (student_id, student_name, birth_date)
+VALUES (n_id, n_name, n_birth_date);
+END IF;
 END LOOP;
 -- Close the cursor
-CLOSE emp_cursor;
+CLOSE n_cursor;
 END$$
 DELIMITER ;
-
-CALL fetch_employee_data();
+***************************************************************************
+********
+mysql> CALL merge_rollcall_data();
+Query OK, 0 rows affected (0.87 sec)
+***************************************************************************
+*******
+mysql> -- Select all records from O_RollCall
+mysql> SELECT * FROM O_RollCall;
