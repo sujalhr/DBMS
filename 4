@@ -12,11 +12,11 @@ salary int
 
 insert into customers(id,name,age,address,salary)
 values
-(1,'Ankith',24,'Karnataka',500000),
-(2,'Chinmaye',23,'Andhra Pradesh',200000),
-(3,'Vijetha',45,'Tamil Nadu',350000),
-(4,'Vishnu Priya',44,'Kerla',350000),
-(5,'Venu Gopal',50,'Telangana',400000);
+(1,'anil',24,'Karnataka',500000),
+(2,'chirag',23,'Andhra Pradesh',200000),
+(3,'kiran',45,'Tamil Nadu',350000),
+(4,'raju ',44,'Kerla',350000),
+(5,'Vinay',50,'Telangana',400000);
 
 alter table customers
 modify salary int not null;
@@ -34,7 +34,7 @@ DELIMITER ;
 
 insert into customers(id,name,age,address,salary)
 values
-(6,'Shripadraj',54,'Goa',300000);
+(6,'harish',54,'Goa',300000);
 
 select * from customers;
 select @salinserted;
